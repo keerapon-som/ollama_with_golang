@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"ollamawithgo/internal/handler/ollamahdl"
 	"ollamawithgo/internal/ollama"
 	"ollamawithgo/internal/service/ollamasvc"
+	"ollamawithgo/internal/service/ollamasvc/llamasvc"
 	"ollamawithgo/internal/web"
 
 	"github.com/gofiber/fiber/v2"
@@ -27,7 +29,8 @@ func registerPublicHandlers(app fiber.Router) {
 
 	handler := web.HandlerRegistrator{}
 	handler.Register(
-		NewOllamaHandler(ollamasvc.NewOllamaService(ollama.NewOllama())),
+		ollamahdl.NewOllamaHandler(ollamasvc.NewOllamaService(ollama.NewOllama())),
+		ollamahdl.NewLlamaHandler(llamasvc.NewLlama3_2Service(ollama.NewOllama())),
 	)
 	handler.Init(app)
 }

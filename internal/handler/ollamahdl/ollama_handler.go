@@ -1,4 +1,4 @@
-package handler
+package ollamahdl
 
 import (
 	"ollamawithgo/internal/service/ollamasvc"
