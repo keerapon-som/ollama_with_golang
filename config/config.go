@@ -22,6 +22,14 @@ type Config struct {
 	IsDebug    bool
 	LogLevel   slog.Level
 	Ollama     Ollama
+	Keycloak   Keycloak
+}
+
+type Keycloak struct {
+	BASEURL           string
+	AdminClientID     string
+	AdminClientSecret string
+	REALM             string
 }
 
 type Ollama struct {
@@ -89,6 +97,12 @@ func doInit() {
 		// },
 		Ollama: Ollama{
 			BASEURL: getEnvString("OLLAMA_BASEURL", ""),
+		},
+		Keycloak: Keycloak{
+			BASEURL:           getEnvString("KEYCLOAK_BASEURL", ""),
+			AdminClientID:     getEnvString("KEYCLOAK_ADMIN_CLIENT_ID", ""),
+			AdminClientSecret: getEnvString("KEYCLOAK_ADMIN_CLIENT_SECRET", ""),
+			REALM:             getEnvString("KEYCLOAK_REALM", ""),
 		},
 	}
 }

@@ -9,6 +9,8 @@ services:
       - "11434:11434"
     volumes:
       - ollama_data:/root/.ollama
+    networks:
+      - theyiz-network
     deploy:
       resources:
         reservations:
@@ -20,6 +22,41 @@ services:
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
 
+  keycloak-db:
+    image: postgres:13
+    container_name: keycloak-db
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak_password  # Replace with a strong password
+    volumes:
+      - keycloak-db-data:/var/lib/postgresql/data
+    networks:
+      - theyiz-network
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak
+    environment:
+      DB_VENDOR: postgres
+      DB_ADDR: keycloak-db
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_PASSWORD: keycloak_password  # Same password as above
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin  # Replace with a strong password
+    command: start-dev
+    ports:
+      - "8080:8080"
+    depends_on:
+      - keycloak-db
+    networks:
+      - theyiz-network
+
 volumes:
+  keycloak-db-data:
   ollama_data:
     driver: local
+
+networks:
+  theyiz-network:
